@@ -1,0 +1,58 @@
+import heapq
+
+
+def dijkstra_shortest_path(graph, start):
+    """
+    Dijkstra's shortest path algorithm with path reconstruction.
+
+    :param graph: a dictionary representing the graph in adjacency list format
+    :param start: the starting node
+    :return: a dictionary containing the shortest distances and paths to all other nodes in the graph from the start node
+    """
+    # Initialize distances and parents
+    distances = {node: float('inf') for node in graph}
+    parents = {node: None for node in graph}
+    distances[start] = 0
+
+    # Initialize heap with start node
+    heap = [(0, start)]
+
+    # Dijkstra's algorithm
+    while heap:
+        current_distance, current_node = heapq.heappop(heap)
+
+        # Process neighboring nodes
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                parents[neighbor] = current_node
+                heapq.heappush(heap, (distance, neighbor))
+
+    # Generate routing table for each node in the graph
+    routing_tables = {}
+    for node in graph:
+        if node != start:
+            # Reconstruct path from parents dictionary
+            path = []
+            current_node = node
+            while current_node is not None:
+                path.append(current_node)
+                current_node = parents[current_node]
+            path.reverse()
+            routing_tables[node] = {'distance': distances[node], 'path': path}
+
+    return routing_tables
+
+
+graph = {
+    'R': {'X': 3, 'Y': 2, 'Z': 5},
+    'X': {'P': 7, 'Q': 4},
+    'Y': {'P': 6, 'Q': 6},
+    'Z': {'P': 5, 'Q': 8},
+    'P': {},
+    'Q': {}
+}
+routing_tables = dijkstra_shortest_path(graph, 'R')
+for node, table in routing_tables.items():
+    print(f'Routing table for node {node}: distance={table["distance"]}, path={table["path"]}')

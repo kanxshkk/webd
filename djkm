@@ -1,0 +1,57 @@
+import heapq
+
+def dijkstra(graph, source, destination):
+    n = len(graph)
+
+    # Create lists to keep track of the shortest distance and the previous node
+    distance = [float('inf')] * n
+    previous = [None] * n
+
+    # Initialize the source node
+    distance[source] = 0
+
+    # Create a priority queue with the source node
+    pq = [(0, source)]
+
+    # Run Dijkstra's algorithm
+    while pq:
+        # Get the node with the smallest distance from the priority queue
+        d, u = heapq.heappop(pq)
+
+        # Check if we have reached the destination node
+        if u == destination:
+            break
+
+        # Update the distance and previous node of each neighbor of u
+        for v in range(n):
+            if graph[u][v] != 0:
+                alt = distance[u] + graph[u][v]
+                if alt < distance[v]:
+                    distance[v] = alt
+                    previous[v] = u
+                    heapq.heappush(pq, (alt, v))
+
+    # Build the shortest path
+    path = []
+    u = destination
+    while previous[u] is not None:
+        path.append(u)
+        u = previous[u]
+    path.append(u)
+    path.reverse()
+
+    return distance[destination], path
+
+# Example usage
+graph = [
+    [0, 2, 4, 0, 0],
+    [2, 0, 1, 2, 0],
+    [4, 1, 0, 3, 0],
+    [0, 2, 3, 0, 2],
+    [0, 0, 0, 2, 0]
+]
+source = 0
+destination = 4
+distance, path = dijkstra(graph, source, destination)
+print(f"Shortest distance from {source} to {destination}: {distance}")
+print(f"Shortest path: {' -> '.join(map(str, path))}")

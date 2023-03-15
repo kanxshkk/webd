@@ -1,0 +1,56 @@
+import heapq
+
+
+def dijkstra(graph, source, destination):
+    # Dijkstra's algorithm to find the shortest path
+    distances = {node: float('inf') for node in graph}
+    previous_nodes = {node: None for node in graph}
+    distances[source] = 0
+
+    priority_queue = [(0, source)]
+
+    while len(priority_queue) > 0:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor in graph[current_node]:
+            distance = current_distance + graph[current_node][neighbor]
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                previous_nodes[neighbor] = current_node
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    path = []
+    current_node = destination
+    while current_node is not None:
+        path.append(current_node)
+        current_node = previous_nodes[current_node]
+    path.reverse()
+
+    return {
+        'distance': distances[destination],
+        'path': path,
+        'routing_table': previous_nodes
+    }
+
+
+# Test the function with the example graph
+graph = {
+    'R': {'X': 3, 'Y': 2, 'Z': 5},
+    'X': {'P': 7, 'Q': 4},
+    'Y': {'P': 6, 'Q': 6},
+    'Z': {'P': 5, 'Q': 8},
+    'P': {},
+    'Q': {}
+}
+
+source = 'R'
+destination = 'Q'
+
+result = dijkstra(graph, source, destination)
+print(f"Shortest distance from {source} to {destination}: {result['distance']}")
+print(f"Shortest path: {' -> '.join(result['path'])}")
+print(f"Routing table for each node: {result['routing_table']}")

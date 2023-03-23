@@ -1,0 +1,158 @@
+#php
+<?php
+// Connect to the database
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'my_database';
+
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Save data
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $fullName = $_POST['fullName'];
+  $email = $_POST['email'];
+  $position = $_POST['position'];
+  $password = $_POST['password'];
+  $gender = $_POST['gender'];
+  $greeting = $_POST['greeting'];
+
+  $sql = "INSERT INTO users (full_name, email, position, password, gender, greeting) VALUES ('$fullName', '$email', '$position', '$password', '$gender', '$greeting')";
+
+  if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+  } else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+  }
+}
+
+// Edit data
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit'])) {
+  $id = $_POST['id'];
+  $fullName = $_POST['fullName'];
+  $email = $_POST['email'];
+  $position = $_POST['position'];
+  $password = $_POST['password'];
+  $gender = $_POST['gender'];
+  $greeting = $_POST['greeting'];
+
+  $sql = "UPDATE users SET full_name='$fullName', email='$email', position='$position', password='$password', gender='$gender', greeting='$greeting' WHERE id=$id";
+
+  if ($conn->query($sql) === TRUE) {
+    echo "Record updated successfully";
+  } else {
+    echo "Error updating record: " . $conn->error;
+  }
+}
+
+// Delete data
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+  $id = $_POST['id'];
+
+  $sql = "DELETE FROM users WHERE id=$id";
+
+  if ($conn->query($sql) === TRUE) {
+    echo "Record deleted successfully";
+  } else {
+    echo "Error deleting record: " . $conn->error;
+  }
+}
+
+// Display data
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+?>
+
+<!-- HTML form to add new user -->
+<form method="post">
+  <div class="form-group">
+    <label for="fullName">Full Name:</label>
+    <input type="text" class="form-control" name="fullName" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" class="form-control" name="email" required>
+  </div>
+  <div class="form-group">
+    <label for="position">Position:</label>
+    <input type="text" class="form-control" name="position" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" class="form-control" name="password" required>
+  </div>
+  <div class="form-group">
+    <label for="gender">Gender:</label>
+    <select class="form-control" name="gender" required>
+      <option value="">Select gender</option>
+      <option value="male
+
+#css
+/* Style the form with Bootstrap classes */
+.form-control:valid {
+    border-color: green;
+  }
+  
+  .form-control:invalid {
+    border-color: red;
+  }
+  
+  .form-group label {
+    margin-bottom: 0.5rem;
+  }
+  
+  #js
+  const form = document.getElementById('myForm');
+
+form.addEventListener('submit', (event) => {
+  // Prevent the form from submitting
+  event.preventDefault();
+
+  // Validate the form fields
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const position = document.getElementById('position').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const gender = document.getElementById('gender').value.trim();
+  const greeting = document.querySelector('input[name="greeting"]:checked');
+
+  if (fullName === '') {
+    alert('Please enter your full name.');
+    return;
+  }
+
+  if (email === '') {
+    alert('Please enter your email.');
+    return;
+  }
+
+  if (position === '') {
+    alert('Please enter your position.');
+    return;
+  }
+
+  if (password === '') {
+    alert('Please enter your password.');
+    return;
+  }
+
+  if (password.length < 8) {
+    alert('Password must be at least 8 characters long.');
+    return;
+  }
+
+  if (gender === '') {
+    alert('Please select your gender.');
+    return;
+  }
+
+  if (!greeting) {
+    alert('Please choose a greeting.');
+    return;
+  }
+});
